@@ -1,5 +1,5 @@
 {
-    "name": "techinasia/laravel-mandrill-notification-channel",
+    "name": "lonesta/laravel-mandrill-notification-channel",
     "description": "Mandrill Notifications Channel for Laravel 5.3",
     "homepage": "https://github.com/techinasia/laravel-mandrill-notification-channel",
     "keywords": ["laravel", "notifications", "mandrill", "channel"],
