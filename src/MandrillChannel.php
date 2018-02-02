@@ -24,8 +24,8 @@ class MandrillChannel
     /**
      * Send the given notification.
      *
-     * @param  mixed  $notifiable
-     * @param  \Illuminate\Notifications\Notification  $notification
+     * @param  mixed                                  $notifiable
+     * @param  \Illuminate\Notifications\Notification $notification
      * @return void
      */
     public function send($notifiable, Notification $notification)
@@ -37,11 +37,11 @@ class MandrillChannel
             ->toArray();
 
         // Inject global "From" address if it's not in the message.
-        if (empty($message['from_email']) && ! empty(config('mail.from.address'))) {
+        if (empty($message['from_email']) && !empty(config('mail.from.address'))) {
             Arr::set($message, 'message.from_email', config('mail.from.address'));
         }
 
-        if (empty($message['from_name']) && ! empty(config('mail.from.name'))) {
+        if (empty($message['from_name']) && !empty(config('mail.from.name'))) {
             Arr::set($message, 'message.from_name', config('mail.from.name'));
         }
 
@@ -54,10 +54,13 @@ class MandrillChannel
 
         $arguments = [];
 
-        if (! empty($message['template_name'])) {
+        if (!empty($message['template_name'])) {
             $method = 'sendTemplate';
             $arguments[] = Arr::get($message, 'template_name');
-            $arguments[] = Arr::get($message, 'template_content', []);
+            $templateContents = Arr::get($message, 'template_content', []);
+            $arguments[] = $templateContents;
+
+            $message['message']['global_merge_vars'] = array_merge(!empty($message['message']['global_merge_vars']) ? $message['message']['global_merge_vars'] : [], $templateContents);
         } else {
             $method = 'send';
         }
