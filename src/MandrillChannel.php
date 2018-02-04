@@ -58,6 +58,7 @@ class MandrillChannel
             $method = 'sendTemplate';
             $arguments[] = Arr::get($message, 'template_name');
             $templateContents = Arr::get($message, 'template_content', []);
+            $templateContents = array_merge($this->getGlobalMerge(), $templateContents);
             $arguments[] = $templateContents;
 
             $message['message']['global_merge_vars'] = array_merge(!empty($message['message']['global_merge_vars']) ? $message['message']['global_merge_vars'] : [], $templateContents);
@@ -86,5 +87,26 @@ class MandrillChannel
         }
 
         return $to;
+    }
+
+    /**
+     * Get global vars to template
+     *
+     * @return array
+     */
+    protected function getGlobalMerge()
+    {
+        $config = [];
+
+        if (!empty(config('fund.mandrill')) and is_array(config('fund.mandrill'))) {
+            $i = 0;
+            foreach (config('fund.mandrill') as $key => $value) {
+                $config[$i]['name'] = $key;
+                $config[$i]['content'] = $value;
+                $i++;
+            }
+        }
+
+        return $config;
     }
 }
